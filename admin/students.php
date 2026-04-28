@@ -161,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-}
 
 // 获取编辑数据
 $edit_data = null;

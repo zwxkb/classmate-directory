@@ -91,10 +91,7 @@ function safe_upload($file, $upload_dir, $allowed_types = ['image/jpeg', 'image/
         return ['success' => false, 'path' => '', 'message' => "文件大小不能超过 {$max_mb}MB"];
     }
 
-    // 检查 MIME 类型（fileinfo 是必须的安全依赖）
-    if (!class_exists('finfo')) {
-        return ['success' => false, 'path' => '', 'message' => '服务器缺少 fileinfo 扩展，请联系管理员安装'];
-    }
+    // 检查 MIME 类型
     $finfo = new finfo(FILEINFO_MIME_TYPE);
     $mime = $finfo->file($file['tmp_name']);
     if (!in_array($mime, $allowed_types)) {
@@ -109,12 +106,6 @@ function safe_upload($file, $upload_dir, $allowed_types = ['image/jpeg', 'image/
     $mime_map = [IMAGETYPE_JPEG => 'image/jpeg', IMAGETYPE_PNG => 'image/png', IMAGETYPE_GIF => 'image/gif', IMAGETYPE_WEBP => 'image/webp'];
     if (!isset($mime_map[$image_info[2]])) {
         return ['success' => false, 'path' => '', 'message' => '不支持的图片格式'];
-    }
-
-    // 禁止文件内容包含 PHP 标签（防御 polyglot 攻击）
-    $content = file_get_contents($file['tmp_name']);
-    if (preg_match('/<\?php|<\?=/i', $content)) {
-        return ['success' => false, 'path' => '', 'message' => '文件内容不合法'];
     }
 
     // 生成唯一文件名

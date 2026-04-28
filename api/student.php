@@ -40,13 +40,11 @@ if ($fh && flock($fh, LOCK_EX)) {
 
 $db = get_db();
 if (!$db) {
-    if ($fh) { flock($fh, LOCK_UN); fclose($fh); }
     json_response(['success' => false, 'message' => '数据库未配置'], 500);
 }
 
 $id = (int)($_GET['id'] ?? 0);
 if ($id <= 0) {
-    if ($fh) { flock($fh, LOCK_UN); fclose($fh); }
     json_response(['success' => false, 'message' => '参数错误'], 400);
 }
 

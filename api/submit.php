@@ -63,24 +63,19 @@ $bio    = trim($_POST['bio'] ?? '');
 
 // 参数验证
 if (empty($name)) {
-    if ($stu_fh) { flock($stu_fh, LOCK_UN); fclose($stu_fh); }
     json_response(['success' => false, 'message' => '请填写姓名']);
 }
 if (mb_strlen($name) > 50) {
-    if ($stu_fh) { flock($stu_fh, LOCK_UN); fclose($stu_fh); }
     json_response(['success' => false, 'message' => '姓名不能超过 50 个字符']);
 }
 if (!empty($phone) && !preg_match('/^1[3-9]\d{9}$/', preg_replace('/\s/', '', $phone))) {
-    if ($stu_fh) { flock($stu_fh, LOCK_UN); fclose($stu_fh); }
     json_response(['success' => false, 'message' => '手机号格式不正确']);
 }
 $phone = preg_replace('/\s/', '', $phone);
 if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    if ($stu_fh) { flock($stu_fh, LOCK_UN); fclose($stu_fh); }
     json_response(['success' => false, 'message' => '邮箱格式不正确']);
 }
 if (mb_strlen($bio) > 500) {
-    if ($stu_fh) { flock($stu_fh, LOCK_UN); fclose($stu_fh); }
     json_response(['success' => false, 'message' => '个人简介不能超过 500 个字符']);
 }
 
@@ -90,7 +85,6 @@ if (!empty($_FILES['avatar']['name'])) {
     $upload_dir = __DIR__ . '/../uploads/avatars';
     $result = safe_upload($_FILES['avatar'], $upload_dir);
     if (!$result['success']) {
-        if ($stu_fh) { flock($stu_fh, LOCK_UN); fclose($stu_fh); }
         json_response(['success' => false, 'message' => '头像上传失败：' . $result['message']]);
     }
     $avatar = $result['path'];
@@ -148,6 +142,5 @@ try {
     $msg = $moderation ? '提交成功，等待管理员审核' : '提交成功';
     json_response(['success' => true, 'message' => $msg, 'id' => $db->lastInsertId(), 'token' => csrf_token()]);
 } catch (Exception $e) {
-    if ($stu_fh) { flock($stu_fh, LOCK_UN); fclose($stu_fh); }
     json_response(['success' => false, 'message' => '提交失败，请稍后重试'], 500);
 }
