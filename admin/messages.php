@@ -54,6 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action']) && $_P
         $messageType = 'error';
     } else {
         $ids = $_POST['ids'] ?? [];
+        if (!is_array($ids)) {
+            $ids = [];
+        }
+        $ids = array_filter(array_map('intval', $ids), function($v) { return $v > 0; });
         if (!empty($ids)) {
             $placeholders = implode(',', array_fill(0, count($ids), '?'));
             try {

@@ -16,12 +16,20 @@ $db = get_db();
 $settings = get_all_settings($db);
 $site_name = $settings['site_name'] ?? '那些年 · 同学录';
 
-// 查询回忆列表
+// 查询回忆列表（分页）
+$mem_page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$mem_per_page = 20;
 try {
-    $stmt = $db->query("SELECT * FROM " . table('memories') . " ORDER BY memory_date DESC, created_at DESC");
+    $total = $db->query("SELECT COUNT(*) FROM " . table('memories'))->fetchColumn();
+    $mem_pag = paginate($total, $mem_page, $mem_per_page);
+    $stmt = $db->prepare("SELECT * FROM " . table('memories') . " ORDER BY memory_date DESC, created_at DESC LIMIT :offset, :per_page");
+    $stmt->bindValue(':offset', $mem_pag['offset'], PDO::PARAM_INT);
+    $stmt->bindValue(':per_page', $mem_pag['per_page'], PDO::PARAM_INT);
+    $stmt->execute();
     $memories = $stmt->fetchAll();
 } catch (Exception $e) {
     $memories = [];
+    $mem_pag = paginate(0, 1, $mem_per_page);
 }
 ?>
 <!DOCTYPE html>
@@ -86,6 +94,7 @@ try {
       </div>
       <?php endforeach; ?>
     </div>
+    <?= pagination_html($mem_pag, 'memories.php?page={page}') ?>
     <?php endif; ?>
   </div>
 </section>

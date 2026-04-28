@@ -1,6 +1,9 @@
 <FilesMatch "^(config|install)\.php$">
     Require all denied
 </FilesMatch>
+<Files "install.lock">
+    Require all denied
+</Files>
 Options -Indexes
 <DirectoryMatch "^\.">
     Require all denied

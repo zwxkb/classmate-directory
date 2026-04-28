@@ -16,6 +16,13 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// 统一设置 HTTP 安全头
+if (!headers_sent()) {
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+}
+
 /**
  * 生成 CSRF Token 并存入 session
  */

@@ -128,6 +128,12 @@ function check_environment() {
         'pass'  => extension_loaded('gd'),
         'required' => false,
     ];
+    $checks['fileinfo'] = [
+        'label' => 'Fileinfo 扩展',
+        'value' => extension_loaded('fileinfo') ? '已安装' : '未安装（必须，文件上传安全依赖）',
+        'pass'  => extension_loaded('fileinfo'),
+        'required' => true,
+    ];
     $upload_dir = __DIR__ . '/uploads';
     $writable = is_writable(__DIR__);
     if (!is_dir($upload_dir)) {
